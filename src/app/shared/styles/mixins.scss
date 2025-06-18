@@ -1,0 +1,20 @@
+$breakpoints: (
+  xs: 380px,
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+  2xl: 1536px
+);
+
+// Mixin de responsividade
+@mixin respond($breakpoint) {
+  $size: map-get($breakpoints, $breakpoint);
+  @if $size {
+    @media (max-width: $size) {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint '#{$breakpoint}' não encontrado.";
+  }
+}
