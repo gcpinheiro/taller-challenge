@@ -4,10 +4,11 @@ import { User } from '../../core/types/user';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { SkeletonComponent } from '../../shared/components/skeleton/skeleton.component';
 
 @Component({
   selector: 'app-home',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, SkeletonComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -19,6 +20,7 @@ export class HomeComponent implements OnInit{
   usersFiltered = signal<User[]>([]);
   searchInput$ = new Subject<string>();
   searchText = '';
+  isLoading = signal(true);
 
   ngOnInit(): void {
     this.searchInput$
@@ -34,13 +36,17 @@ export class HomeComponent implements OnInit{
         );
         this.usersFiltered.update(() => filtered);
     });
-
+    this.isLoading.update(() => true);
     this.userService.getUsers().subscribe({
       next: (response) => {
         this.users.update(() => response);
         this.usersFiltered.update(() => response);
-        console.log("usersFiltered: ", this.usersFiltered)
-      }
+        console.log("usersFiltered: ", this.usersFiltered())
+        setTimeout(()=>{
+          this.isLoading.update(() => false)
+
+        }, 1000)
+      },
     })
   }
 

@@ -6,7 +6,7 @@
     </div>
   </div>
   <div class="box-list-users">
-    @if(usersFiltered().length > 0){
+    @if(usersFiltered().length > 0 && !isLoading()){
       <ng-container *ngFor="let user of usersFiltered()">
        <div class="user-information">
           <div class="initial-letter">{{firstLetter(user.name)}}</div>
@@ -16,6 +16,17 @@
           </div>
         </div>
       </ng-container>
+    }
+    @else{
+      @if(isLoading()){
+        <div class="box-skeleton">
+          <app-skeleton></app-skeleton>
+        </div>
+      }
+
+      @if(usersFiltered().length === 0) {
+        <h1 class="feedback-message">No users found</h1>
+      }
     }
   </div>
 </div>
