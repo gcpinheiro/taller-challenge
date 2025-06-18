@@ -1,1 +1,19 @@
-<p>home works!</p>
+<div class="container">
+  <div class="container-search">
+    <div class="box-search">
+      <label for="search">Search user</label>
+      <input type="text" [(ngModel)]="searchText" (input)="onInputChange()" name="search" class="search-input">
+    </div>
+  </div>
+  <div class="box-list-users">
+    @if(usersFiltered().length > 0){
+      <ng-container *ngFor="let user of usersFiltered()">
+       <div class="user-information">
+          <div class="initial-letter">{{firstLetter(user.name)}}</div>
+          <h1 class="name">{{user.name}} - </h1>
+          <span class="email">{{user.email}}</span>
+        </div>
+      </ng-container>
+    }
+  </div>
+</div>
