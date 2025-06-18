@@ -26,6 +26,10 @@
 
       @if(usersFiltered().length === 0) {
         <h1 class="feedback-message">No users found</h1>
+
+        @if(errorMessage()){
+          <p>{{errorMessage()}}</p>
+        }
       }
     }
   </div>

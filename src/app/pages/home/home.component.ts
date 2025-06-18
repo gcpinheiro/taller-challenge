@@ -15,12 +15,12 @@ import { SkeletonComponent } from '../../shared/components/skeleton/skeleton.com
 export class HomeComponent implements OnInit{
 
   userService = inject(UsersService);
-  // document = inject(Document);
   users = signal<User[]>([]);
   usersFiltered = signal<User[]>([]);
   searchInput$ = new Subject<string>();
   searchText = '';
   isLoading = signal(true);
+  errorMessage = signal<string | null>('');
 
   ngOnInit(): void {
     this.searchInput$
@@ -42,11 +42,13 @@ export class HomeComponent implements OnInit{
         this.users.update(() => response);
         this.usersFiltered.update(() => response);
         console.log("usersFiltered: ", this.usersFiltered())
-        setTimeout(()=>{
-          this.isLoading.update(() => false)
-
-        }, 1000)
+        this.isLoading.update(() => false);
+        this.errorMessage.update(() => null);
       },
+      error: (error) => {
+        this.isLoading.update(() => false);
+        this.errorMessage.update(() => 'An error occurred while loading the data. Please try again.')
+      }
     })
   }
 

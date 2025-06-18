@@ -7,7 +7,6 @@ $breakpoints: (
   2xl: 1536px
 );
 
-// Mixin de responsividade
 @mixin respond($breakpoint) {
   $size: map-get($breakpoints, $breakpoint);
   @if $size {
