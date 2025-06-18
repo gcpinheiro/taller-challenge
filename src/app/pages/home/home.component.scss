@@ -6,7 +6,7 @@
   height: 100vh;
   padding: 16px 32px;
   box-sizing: border-box;
-  background: vars.$color-primary;
+  background: vars.$color-secondary;
   overflow-y: auto;
 
   @include mixins.respond(md) {
@@ -35,9 +35,9 @@
 
       .search-input{
         height: 40px;
-        border: 1px solid #c3c3c3;
+        border: 1px solid vars.$color-primary;
         padding-left: 4px;
-        min-width: 250px;
+        min-width: 300px;
         border-radius: 8px;
 
         @include mixins.respond(xs) {
@@ -62,7 +62,7 @@
       gap: 16px;
       align-items: center;
       justify-content: flex-start;
-      background: vars.$color-secondary;
+      background: vars.$color-primary;
       width: 100%;
       padding: 16px;
       box-sizing: border-box;

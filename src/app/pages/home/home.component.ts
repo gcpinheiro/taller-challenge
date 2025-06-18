@@ -1,19 +1,17 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { UsersService } from '../../core/services/users.service';
-import { User } from '../../core/types/user';
+import { User } from '../../core/models/user';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { SkeletonComponent } from '../../shared/components/skeleton/skeleton.component';
-
 @Component({
   selector: 'app-home',
   imports: [FormsModule, CommonModule, SkeletonComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent implements OnInit{
-
+export class HomeComponent implements OnInit, OnDestroy{
   userService = inject(UsersService);
   users = signal<User[]>([]);
   usersFiltered = signal<User[]>([]);
@@ -30,7 +28,6 @@ export class HomeComponent implements OnInit{
       )
       .subscribe(value => {
         const search = value.toLowerCase().trim();
-        console.log('Valor captado com debounce:', value);
         const filtered = this.users().filter(user =>
           user.name.toLowerCase().includes(search)
         );
@@ -41,11 +38,10 @@ export class HomeComponent implements OnInit{
       next: (response) => {
         this.users.update(() => response);
         this.usersFiltered.update(() => response);
-        console.log("usersFiltered: ", this.usersFiltered())
         this.isLoading.update(() => false);
         this.errorMessage.update(() => null);
       },
-      error: (error) => {
+      error: () => {
         this.isLoading.update(() => false);
         this.errorMessage.update(() => 'An error occurred while loading the data. Please try again.')
       }
@@ -60,4 +56,7 @@ export class HomeComponent implements OnInit{
    this.searchInput$.next(this.searchText);
   }
 
+  ngOnDestroy(): void {
+    this.searchInput$.unsubscribe();
+  }
 }
