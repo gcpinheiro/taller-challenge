@@ -3,7 +3,7 @@ import { UsersService } from '../../core/services/users.service';
 import { User } from '../../core/models/user';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import { SkeletonComponent } from '../../shared/components/skeleton/skeleton.component';
 @Component({
   selector: 'app-home',
@@ -19,9 +19,12 @@ export class HomeComponent implements OnInit, OnDestroy{
   searchText = '';
   isLoading = signal(true);
   errorMessage = signal<string | null>('');
+  private sub = new Subscription();
 
   ngOnInit(): void {
-    this.searchInput$
+    this.isLoading.update(() => true);
+
+    const searchSub = this.searchInput$
       .pipe(
         debounceTime(500),
         distinctUntilChanged()
@@ -33,7 +36,10 @@ export class HomeComponent implements OnInit, OnDestroy{
         );
         this.usersFiltered.update(() => filtered);
     });
-    this.isLoading.update(() => true);
+
+    this.sub.add(searchSub);
+
+
     this.userService.getUsers().subscribe({
       next: (response) => {
         this.users.update(() => response);
@@ -46,6 +52,7 @@ export class HomeComponent implements OnInit, OnDestroy{
         this.errorMessage.update(() => 'An error occurred while loading the data. Please try again.')
       }
     })
+
   }
 
   firstLetter(name: string){
@@ -57,6 +64,6 @@ export class HomeComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-    this.searchInput$.unsubscribe();
+    this.sub.unsubscribe();
   }
 }
