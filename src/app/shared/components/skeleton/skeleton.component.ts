@@ -8,6 +8,6 @@ import { Component } from '@angular/core';
   styleUrl: './skeleton.component.scss'
 })
 export class SkeletonComponent {
-  rows = 5;
-  columns = 5;
+  rows = 10;
+  columns = 10;
 }
